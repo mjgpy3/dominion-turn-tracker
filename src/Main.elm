@@ -10,7 +10,7 @@ main =
 
 type Bucket = Actions | Buys | Monies
 
-type Msg = Increment Bucket | Decrement Bucket | NewTurn
+type Msg = Adjust Int Bucket | NewTurn
 
 type alias Model = { actions : Int, buys : Int, monies : Int }
 
@@ -19,15 +19,9 @@ newTurn = { actions=1, buys=1, monies=0 }
 
 update msg model =
   case msg of
-    Increment Actions -> {model | actions = model.actions + 1}
-    Decrement Actions -> {model | actions = model.actions - 1}
-
-    Increment Buys -> {model | buys = model.buys + 1}
-    Decrement Buys -> {model | buys = model.buys - 1}
-
-    Increment Monies -> {model | monies = model.monies + 1}
-    Decrement Monies -> {model | monies = model.monies - 1}
-
+    Adjust amount Actions -> {model | actions = amount + model.actions}
+    Adjust amount Buys -> {model | buys = amount + model.buys}
+    Adjust amount Monies -> {model | monies = amount + model.monies}
     NewTurn -> newTurn
 
 view model =
@@ -52,9 +46,9 @@ viewBucketCounter bucketName count bucket =
     , style "justify-content" "space-around"
     ]
     [ bigLabel bucketName
-    , bigButton (Decrement bucket) "-"
+    , bigButton (Adjust -1 bucket) "-"
     , bigLabel (String.fromInt count)
-    , bigButton (Increment bucket) "+"
+    , bigButton (Adjust 1 bucket) "+"
     ]
 
 bigLabel lbl =

@@ -5182,45 +5182,29 @@ var $elm$browser$Browser$sandbox = function (impl) {
 };
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		switch (msg.$) {
-			case 'Increment':
-				switch (msg.a.$) {
-					case 'Actions':
-						var _v1 = msg.a;
-						return _Utils_update(
-							model,
-							{actions: model.actions + 1});
-					case 'Buys':
-						var _v3 = msg.a;
-						return _Utils_update(
-							model,
-							{buys: model.buys + 1});
-					default:
-						var _v5 = msg.a;
-						return _Utils_update(
-							model,
-							{monies: model.monies + 1});
-				}
-			case 'Decrement':
-				switch (msg.a.$) {
-					case 'Actions':
-						var _v2 = msg.a;
-						return _Utils_update(
-							model,
-							{actions: model.actions - 1});
-					case 'Buys':
-						var _v4 = msg.a;
-						return _Utils_update(
-							model,
-							{buys: model.buys - 1});
-					default:
-						var _v6 = msg.a;
-						return _Utils_update(
-							model,
-							{monies: model.monies - 1});
-				}
-			default:
-				return $author$project$Main$newTurn;
+		if (msg.$ === 'Adjust') {
+			switch (msg.b.$) {
+				case 'Actions':
+					var amount = msg.a;
+					var _v1 = msg.b;
+					return _Utils_update(
+						model,
+						{actions: amount + model.actions});
+				case 'Buys':
+					var amount = msg.a;
+					var _v2 = msg.b;
+					return _Utils_update(
+						model,
+						{buys: amount + model.buys});
+				default:
+					var amount = msg.a;
+					var _v3 = msg.b;
+					return _Utils_update(
+						model,
+						{monies: amount + model.monies});
+			}
+		} else {
+			return $author$project$Main$newTurn;
 		}
 	});
 var $author$project$Main$Actions = {$: 'Actions'};
@@ -5266,12 +5250,10 @@ var $author$project$Main$bigButton = F2(
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$hr = _VirtualDom_node('hr');
-var $author$project$Main$Decrement = function (a) {
-	return {$: 'Decrement', a: a};
-};
-var $author$project$Main$Increment = function (a) {
-	return {$: 'Increment', a: a};
-};
+var $author$project$Main$Adjust = F2(
+	function (a, b) {
+		return {$: 'Adjust', a: a, b: b};
+	});
 var $elm$html$Html$label = _VirtualDom_node('label');
 var $author$project$Main$bigLabel = function (lbl) {
 	return A2(
@@ -5284,6 +5266,9 @@ var $author$project$Main$bigLabel = function (lbl) {
 			[
 				$elm$html$Html$text(lbl)
 			]));
+};
+var $elm$core$Basics$negate = function (n) {
+	return -n;
 };
 var $author$project$Main$viewBucketCounter = F3(
 	function (bucketName, count, bucket) {
@@ -5300,13 +5285,13 @@ var $author$project$Main$viewBucketCounter = F3(
 					$author$project$Main$bigLabel(bucketName),
 					A2(
 					$author$project$Main$bigButton,
-					$author$project$Main$Decrement(bucket),
+					A2($author$project$Main$Adjust, -1, bucket),
 					'-'),
 					$author$project$Main$bigLabel(
 					$elm$core$String$fromInt(count)),
 					A2(
 					$author$project$Main$bigButton,
-					$author$project$Main$Increment(bucket),
+					A2($author$project$Main$Adjust, 1, bucket),
 					'+')
 				]));
 	});
